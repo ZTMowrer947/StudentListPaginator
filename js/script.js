@@ -110,5 +110,5 @@ function appendPageLinks(list) {
    pageDiv.appendChild(paginationDiv);
 }
 
-
-
+// Add pagination links for students on page load
+window.onload = appendPageLinks(students);
