@@ -19,22 +19,24 @@ FSJS project 2 - List Filter and Pagination
 
 
 
+// Shows (up to) ten items on the given pages from the given list, hiding all other items in the list 
+function showPage(list, pageNumber) {
+   // Calculate index of first item to display
+   const firstItemIndex = (pageNumber - 1) * 10;
 
-/*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
+   // Calculate index of last item to display (unless list ends before this index is reached)
+   const lastItemIndex = firstItemIndex + 9
 
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
-***/
-
+   // Hide all items before first item index and after last item index (if reached) and
+   // show the items between the indexes (indices)
+   for (let i = 0; i < list.children.length; i++) {
+      if (i < firstItemIndex || i > lastItemIndex) {
+         list.children[i].style.display = "none";  // Hide element
+      } else {
+         list.children[i].style.display = "block"; // Show element
+      }
+   }
+}
 
 
 
@@ -46,5 +48,3 @@ FSJS project 2 - List Filter and Pagination
 
 
 
-
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
