@@ -38,13 +38,77 @@ function showPage(list, pageNumber) {
    }
 }
 
+// Append pagination links for items in given list
+function appendPageLinks(list) {
+   // Get page div
+   const pageDiv = document.querySelector("div.page");
 
+   // Get current pagination div, if one is present
+   const currentPagination = document.querySelector("div.pagination");
 
-/*** 
-   Create the `appendPageLinks function` to generate, append, and add 
-   functionality to the pagination buttons.
-***/
+   // If a pagination div is already present, remove it from page div
+   if (currentPagination !== null) {
+      pageDiv.removeChild(currentPagination);
+   }
 
+   // Calculate number of pages to generate links for
+   const numberOfPages = Math.ceil(list.children.length / 10)
+
+   // Create pagination div, giving it the pagination class
+   const paginationDiv = document.createElement("div");
+   paginationDiv.classList.add("pagination");
+
+   // Create unordered list for pagination links
+   const ul = document.createElement("ul");
+
+   // Add buttons for each page
+   for (let i = 1; i <= numberOfPages; i++) {
+      // Create list item
+      const li = document.createElement("li");
+
+      // Create anchor for page
+      const a = document.createElement("a");
+
+      // If this is the first page, set it active to begin with
+      // and show it first
+      if (i === 1) {
+         a.classList.add("active");
+         showPage(list, 1);
+      }
+
+      // Set text content to be page number
+      a.innerText = i;
+
+      // Add event listener to anchor to set only the
+      // page linked to be active
+      a.addEventListener("click", e => {
+         // Prevent anchor from trying to navigate to a new URL
+         e.preventDefault();
+
+         // Unset active class on previously active anchor
+         const previousActiveAnchor = document.querySelector("a.active");
+         previousActiveAnchor.classList.remove("active");
+
+         // Add active class on anchor that was clicked
+         e.target.classList.add("active");
+
+         // Show students on page that anchor links to
+         showPage(list, i);
+      });
+
+      // Append anchor to list item
+      li.appendChild(a);
+
+      // Append list item to ul
+      ul.appendChild(li);
+   }
+
+   // Append ul to pagination div
+   paginationDiv.appendChild(ul);
+
+   // Append pagination to page div
+   pageDiv.appendChild(paginationDiv);
+}
 
 
 
