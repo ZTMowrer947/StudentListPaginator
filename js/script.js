@@ -122,6 +122,39 @@ const appendSearch = listElement => {
    const button = document.createElement("button");
    button.innerText = "Search";
 
+   const sortDiv = document.createElement("div");
+   sortDiv.classList.add("search-sorting");
+
+   const sortByLabel = document.createElement("label");
+   sortByLabel.htmlFor = "sort-by";
+   sortByLabel.innerText = "Optionally sort by:";
+
+   const sortBySelect = document.createElement("select");
+   sortBySelect.id = "sort-by";
+
+   const sortByOptions = [
+      {
+         label: "Don't Sort",
+         value: "nosort",
+      },
+      {
+         label: "Name",
+         value: "name",
+      },
+      {
+         label: "Date Joined",
+         value: "joindate",
+      }
+   ];
+
+   sortByOptions.forEach(option => {
+      let optionElement = document.createElement("option")
+      optionElement.innerText = option.label;
+      optionElement.value = option.value;
+
+      sortBySelect.appendChild(optionElement);
+   });
+
    // Define search handler
    const searchHandler = () => {
       // Get the "no results" list item, if present
@@ -131,6 +164,8 @@ const appendSearch = listElement => {
       if (noResultsListItem !== null) {
          listElement.removeChild(noResultsListItem);
       }
+
+      let results = [];
 
       // Iterate through entire list of students
       for (let i = 0; i < allStudents.length; i++) {
@@ -155,13 +190,13 @@ const appendSearch = listElement => {
             name.includes(input.value.toLowerCase()) ||  // The name field contains the search term, or...
             email.includes(input.value.toLowerCase())    // The email field contains the search term...
          ) {
-            // Then add that student back to the list
-            listElement.appendChild(allStudents[i]);     
+            // Then add that student to the list of results
+            results.push(allStudents[i]);     
          }
       }
 
       // If there are no results...
-      if (listElement.children.length === 0) {
+      if (results.length === 0) {
          // Get current pagination, if present
          const pagination = document.querySelector("div.pagination");
 
@@ -184,8 +219,68 @@ const appendSearch = listElement => {
 
          // Append list item to list
          listElement.appendChild(noResults);
-      } else {
-         // Otherwise, recreate the pagination for the new list
+      } else { // Otherwise...
+         /*
+            Define spaceship operator (<=>) 
+            Compares two objects, returning -1, 0, or 1
+            based on if first item is less than, equal to, or greater than
+            the second item, respectively.
+         */
+         const spaceship = (a, b) => {
+            if (a < b) {
+               return -1;
+            } else if (a > b) {
+               return 1;
+            } else {
+               return 0;
+            }
+         }
+
+         // Given the value of the sorting select element...
+         switch (sortBySelect.value) {
+            // Sort by name if that option was selected...
+            case "name":
+               // Sort results by name
+               results = results.sort((a, b) => {
+                  // Get names of elements to compare
+                  const nameA = a.firstElementChild.children[1].textContent;
+                  const nameB = b.firstElementChild.children[1].textContent;
+
+                  // Apply spaceship operator to determine element order
+                  return spaceship(nameA, nameB);
+               });
+               break;
+
+            // Or sort by joining date if that option was selected.
+            case "joindate":
+               // Sort by join data
+               results = results.sort((a, b) => {
+                  // Get date text of elements to compare
+                  const dateTextA = a.lastElementChild.firstElementChild.textContent;
+                  const dateTextB = b.lastElementChild.firstElementChild.textContent;
+
+                  // Construct new date for former element
+                  const dateA = new Date(
+                     dateTextA.substring(dateTextA.indexOf(" ") + 1)
+                  );
+
+                  // Construct new date for latter element
+                  const dateB = new Date(
+                     dateTextB.substring(dateTextB.indexOf(" ") + 1)
+                  );
+
+                  // Apply spaceship operator to determine element order
+                  return spaceship(dateA, dateB);
+               });
+               break;
+
+            // Otherwise, no sorting is done.
+         }
+
+         // Append each results to the list element
+         results.forEach(result => listElement.appendChild(result));
+
+         // Update the pagination links for the new results
          appendPageLinks(listElement.children);
       }
    };
@@ -196,9 +291,19 @@ const appendSearch = listElement => {
    // Also apply search handler when input field changes
    input.addEventListener("keyup", searchHandler);
 
+   // Also apply search handler when select field changes
+   sortBySelect.addEventListener("change", searchHandler);
+
    // Append input and button to search div
    searchDiv.appendChild(input);
    searchDiv.appendChild(button);
+
+   // Append sorting label and select to sort div
+   sortDiv.appendChild(sortByLabel);
+   sortDiv.appendChild(sortBySelect);
+
+   // Append sort div to search div
+   searchDiv.appendChild(sortDiv);
 
    // Get page header div
    const pageHeader = document.querySelector("div.page-header");
