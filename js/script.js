@@ -14,8 +14,11 @@
    will only be used inside of a function, then it can be locally 
    scoped to that function.
 ***/
-// List of students
-const students = document.querySelector("ul.student-list");
+// Student list element
+let studentsUl = document.querySelector("ul.student-list");
+
+// Array of all students
+const allStudents = [ ...studentsUl.children ];
 
 
 
@@ -29,11 +32,11 @@ function showPage(list, pageNumber) {
 
    // Hide all items before first item index and after last item index (if reached) and
    // show the items between the indexes (indices)
-   for (let i = 0; i < list.children.length; i++) {
+   for (let i = 0; i < list.length; i++) {
       if (i < firstItemIndex || i > lastItemIndex) {
-         list.children[i].style.display = "none";  // Hide element
+         list[i].style.display = "none";  // Hide element
       } else {
-         list.children[i].style.display = "block"; // Show element
+         list[i].style.display = "block"; // Show element
       }
    }
 }
@@ -52,7 +55,7 @@ function appendPageLinks(list) {
    }
 
    // Calculate number of pages to generate links for
-   const numberOfPages = Math.ceil(list.children.length / 10)
+   const numberOfPages = Math.ceil(list.length / 10)
 
    // Create pagination div, giving it the pagination class
    const paginationDiv = document.createElement("div");
@@ -110,5 +113,71 @@ function appendPageLinks(list) {
    pageDiv.appendChild(paginationDiv);
 }
 
-// Add pagination links for students on page load
-window.onload = appendPageLinks(students);
+// Append search functionality
+function appendSearch(listElement) {
+   // Create search div, giving it the student-search class
+   const searchDiv = document.createElement("div");
+   searchDiv.classList.add("student-search");
+
+   // Create input element, with placeholder text
+   const input = document.createElement("input");
+   input.placeholder = "Search for students...";
+
+   // Create search button, with search text
+   const button = document.createElement("button");
+   button.innerText = "Search";
+
+   // Define search handler
+   const searchHandler = () => {
+      // Iterate through entire list of students
+      for (let i = 0; i < allStudents.length; i++) {
+         // Remove all students from list element,
+         // aside from those already removed from
+         // previous searches
+         if (listElement.contains(allStudents[i])) {
+            listElement.removeChild(allStudents[i]);
+         }
+
+         // Get details div of student
+         const details = allStudents[i].children[0];
+
+         // Get name and email address of student
+         const name = details.children[1].textContent;
+         const email = details.children[2].textContent;
+
+         // If...
+         if (
+            name.includes(input.value.toLowerCase()) ||  // The name field contains the search term, or...
+            email.includes(input.value.toLowerCase())    // The email field contains the search term...
+         ) {
+            // Then add that student back to the list
+            listElement.appendChild(allStudents[i]);     
+         }
+      }
+
+      // Recreate the pagination for the new list
+      appendPageLinks(listElement.children);
+   };
+
+   // Apply search handler when button is clicked
+   button.addEventListener("click", searchHandler);
+   
+   // Also apply search handler when input field changes
+   input.addEventListener("keyup", searchHandler);
+
+   // Append input and button to search div
+   searchDiv.appendChild(input);
+   searchDiv.appendChild(button);
+
+   // Get page header div
+   const pageHeader = document.querySelector("div.page-header");
+
+   // Append search div to page header
+   pageHeader.appendChild(searchDiv);
+}
+
+// Add pagination links and search functionality for students on page load
+window.onload = () => {
+   appendPageLinks(allStudents);
+   appendSearch(studentsUl);
+}
