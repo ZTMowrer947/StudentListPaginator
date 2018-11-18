@@ -43,6 +43,18 @@ body{
       color: #fff
     }
 
+    .page-header .student-search .search-sorting {
+      margin-top: 0.5rem;
+      display: flex;
+      justify-content: end;
+    }
+    
+    .page-header .student-search .search-sorting label {
+      color: #888;
+      font-weight: lighter;
+      margin-right: 0.5rem;
+    }
+
 .student-list{}
 
   .student-item{
