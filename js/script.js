@@ -138,13 +138,21 @@ const appendSearch = listElement => {
          value: "nosort",
       },
       {
-         label: "Name",
+         label: "Name (ascending)",
          value: "name",
       },
       {
-         label: "Date Joined",
+         label: "Name (descending)",
+         value: "namedesc"
+      },
+      {
+         label: "Date Joined (ascending)",
          value: "joindate",
-      }
+      },
+      {
+         label: "Date Joined (descending)",
+         value: "joindatedesc",
+      },
    ];
 
    sortByOptions.forEach(option => {
@@ -236,42 +244,58 @@ const appendSearch = listElement => {
             }
          }
 
+         const sortByName = (a, b) => {
+            // Get names of elements to compare
+            const nameA = a.firstElementChild.children[1].textContent;
+            const nameB = b.firstElementChild.children[1].textContent;
+
+            // Apply spaceship operator to determine element order
+            return spaceship(nameA, nameB);
+         };
+
+         const sortByJoinDate = (a, b) => {
+            // Get date text of elements to compare
+            const dateTextA = a.lastElementChild.firstElementChild.textContent;
+            const dateTextB = b.lastElementChild.firstElementChild.textContent;
+
+            // Construct new date for former element
+            const dateA = new Date(
+               dateTextA.substring(dateTextA.indexOf(" ") + 1)
+            );
+
+            // Construct new date for latter element
+            const dateB = new Date(
+               dateTextB.substring(dateTextB.indexOf(" ") + 1)
+            );
+
+            // Apply spaceship operator to determine element order
+            return spaceship(dateA, dateB);
+         };
+
          // Given the value of the sorting select element...
          switch (sortBySelect.value) {
-            // Sort by name if that option was selected...
+            // Sort by name, ascending order
             case "name":
                // Sort results by name
-               results = results.sort((a, b) => {
-                  // Get names of elements to compare
-                  const nameA = a.firstElementChild.children[1].textContent;
-                  const nameB = b.firstElementChild.children[1].textContent;
-
-                  // Apply spaceship operator to determine element order
-                  return spaceship(nameA, nameB);
-               });
+               results = results.sort(sortByName);
                break;
 
-            // Or sort by joining date if that option was selected.
+            // Sort by name, descending order
+            case "namedesc":
+               // Sort results by name, then reverse order in array
+               results = results.sort(sortByName).reverse();
+               break;
+
+            // Sort by date joined, ascending order
             case "joindate":
-               // Sort by join data
-               results = results.sort((a, b) => {
-                  // Get date text of elements to compare
-                  const dateTextA = a.lastElementChild.firstElementChild.textContent;
-                  const dateTextB = b.lastElementChild.firstElementChild.textContent;
-
-                  // Construct new date for former element
-                  const dateA = new Date(
-                     dateTextA.substring(dateTextA.indexOf(" ") + 1)
-                  );
-
-                  // Construct new date for latter element
-                  const dateB = new Date(
-                     dateTextB.substring(dateTextB.indexOf(" ") + 1)
-                  );
-
-                  // Apply spaceship operator to determine element order
-                  return spaceship(dateA, dateB);
-               });
+               // Sort results by join date
+               results = results.sort(sortByJoinDate);
+               break;
+            
+            // Sort by date joined, descending order
+            case "joindatedesc":
+               // Sort results by join date, then reverse order in array
+               results = results.sort(sortByJoinDate).reverse();
                break;
 
             // Otherwise, no sorting is done.
