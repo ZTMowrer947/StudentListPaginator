@@ -12,7 +12,7 @@ const allStudents = [ ...studentsUl.children ];
 
 
 // Shows (up to) ten items on the given page from the given list, hiding all other items in the list 
-function showPage(list, pageNumber) {
+const showPage = (list, pageNumber) => {
    // Calculate index of first item to display
    const firstItemIndex = (pageNumber - 1) * 10;
 
@@ -33,7 +33,7 @@ function showPage(list, pageNumber) {
 }
 
 // Append pagination links for items in given list
-function appendPageLinks(list) {
+const appendPageLinks = list => {
    // Get page div
    const pageDiv = document.querySelector("div.page");
 
@@ -109,7 +109,7 @@ function appendPageLinks(list) {
 }
 
 // Append search functionality
-function appendSearch(listElement) {
+const appendSearch = listElement => {
    // Create search div, giving it the student-search class
    const searchDiv = document.createElement("div");
    searchDiv.classList.add("student-search");
