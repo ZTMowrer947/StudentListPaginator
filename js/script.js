@@ -129,6 +129,14 @@ function appendSearch(listElement) {
 
    // Define search handler
    const searchHandler = () => {
+      // Get the "no results" list item, if present
+      let noResultsListItem = document.querySelector("li.noresults");
+
+      // If it is present, remove it
+      if (noResultsListItem !== null) {
+         listElement.removeChild(noResultsListItem);
+      }
+
       // Iterate through entire list of students
       for (let i = 0; i < allStudents.length; i++) {
          // Remove all students from list element,
@@ -155,8 +163,34 @@ function appendSearch(listElement) {
          }
       }
 
-      // Recreate the pagination for the new list
-      appendPageLinks(listElement.children);
+      // If there are no results...
+      if (listElement.children.length === 0) {
+         // Get current pagination, if present
+         const pagination = document.querySelector("div.pagination");
+
+         // Remove it if it exists
+         if (pagination !== null)
+            pagination.remove();
+
+         // Create new list item, giving it the noresults class
+         const noResults = document.createElement("li");
+         noResults.classList.add("noresults");
+
+         // Create paragraph element
+         const p = document.createElement("p");
+
+         // Set "no results found" text, specifying the search term
+         p.innerText = `No results found for search term "${input.value}".`;
+
+         // Append paragraph to list item
+         noResults.appendChild(p);
+
+         // Append list item to list
+         listElement.appendChild(noResults);
+      } else {
+         // Otherwise, recreate the pagination for the new list
+         appendPageLinks(listElement.children);
+      }
    };
 
    // Apply search handler when button is clicked
