@@ -1,19 +1,8 @@
-// Treehouse FSJS Techdegree Unit 2 Project
-// List Filter and Pagination
-   
-// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
+/*//////////////////////////////////////////
+   Treehouse FSJS Techdegree Unit 2 Project
+   List Filter and Pagination
+//////////////////////////////////////////*/
 
-
-/*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-***/
 // Student list element
 let studentsUl = document.querySelector("ul.student-list");
 
@@ -22,7 +11,7 @@ const allStudents = [ ...studentsUl.children ];
 
 
 
-// Shows (up to) ten items on the given pages from the given list, hiding all other items in the list 
+// Shows (up to) ten items on the given page from the given list, hiding all other items in the list 
 function showPage(list, pageNumber) {
    // Calculate index of first item to display
    const firstItemIndex = (pageNumber - 1) * 10;
@@ -30,8 +19,10 @@ function showPage(list, pageNumber) {
    // Calculate index of last item to display (unless list ends before this index is reached)
    const lastItemIndex = firstItemIndex + 9
 
-   // Hide all items before first item index and after last item index (if reached) and
-   // show the items between the indexes (indices)
+   /*
+      Hide all items before first item index and after last item index (if reached) and
+      show the items between the indexes (indices)
+   */
    for (let i = 0; i < list.length; i++) {
       if (i < firstItemIndex || i > lastItemIndex) {
          list[i].style.display = "none";  // Hide element
@@ -72,8 +63,10 @@ function appendPageLinks(list) {
       // Create anchor for page
       const a = document.createElement("a");
 
-      // If this is the first page, set it active to begin with
-      // and show it first
+      /*
+         If this is the first page, set it active to begin with
+         and show it first
+      */
       if (i === 1) {
          a.classList.add("active");
          showPage(list, 1);
@@ -82,8 +75,10 @@ function appendPageLinks(list) {
       // Set text content to be page number
       a.innerText = i;
 
-      // Add event listener to anchor to set only the
-      // page linked to be active
+      /*
+         Add event listener to anchor to set only the
+         page linked to be active
+      */
       a.addEventListener("click", e => {
          // Prevent anchor from trying to navigate to a new URL
          e.preventDefault();
@@ -139,9 +134,11 @@ function appendSearch(listElement) {
 
       // Iterate through entire list of students
       for (let i = 0; i < allStudents.length; i++) {
-         // Remove all students from list element,
-         // aside from those already removed from
-         // previous searches
+         /*
+            Remove all students from list element,
+            aside from those already removed from
+            previous searches
+         */
          if (listElement.contains(allStudents[i])) {
             listElement.removeChild(allStudents[i]);
          }
