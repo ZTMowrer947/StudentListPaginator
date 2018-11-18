@@ -122,19 +122,26 @@ const appendSearch = listElement => {
    const button = document.createElement("button");
    button.innerText = "Search";
 
+   // Create sorting div, with search-sorting class
    const sortDiv = document.createElement("div");
    sortDiv.classList.add("search-sorting");
 
+   // Create sort label for sort-by select element
    const sortByLabel = document.createElement("label");
    sortByLabel.htmlFor = "sort-by";
    sortByLabel.innerText = "Optionally sort by:";
 
+   // Create sorting select, with sort-by ID
    const sortBySelect = document.createElement("select");
    sortBySelect.id = "sort-by";
 
+   // Options for select
    const sortByOptions = [
       {
+         // Label to display
          label: "Don't Sort",
+
+         // Internal value to check against
          value: "nosort",
       },
       {
@@ -155,11 +162,16 @@ const appendSearch = listElement => {
       },
    ];
 
+   // Append each option to select
    sortByOptions.forEach(option => {
+      // Create option element
       let optionElement = document.createElement("option")
+
+      // Set text and value properties
       optionElement.innerText = option.label;
       optionElement.value = option.value;
 
+      // Append option to select
       sortBySelect.appendChild(optionElement);
    });
 
@@ -235,6 +247,7 @@ const appendSearch = listElement => {
             the second item, respectively.
          */
          const spaceship = (a, b) => {
+            // Return -1 if a < b
             if (a < b) {
                return -1;
             } else if (a > b) {
@@ -272,7 +285,7 @@ const appendSearch = listElement => {
             return spaceship(dateA, dateB);
          };
 
-         // Given the value of the sorting select element...
+         // Based on the value of the sorting select, do one of the following:
          switch (sortBySelect.value) {
             // Sort by name, ascending order
             case "name":
@@ -301,7 +314,7 @@ const appendSearch = listElement => {
             // Otherwise, no sorting is done.
          }
 
-         // Append each results to the list element
+         // Append each result to the list element
          results.forEach(result => listElement.appendChild(result));
 
          // Update the pagination links for the new results
