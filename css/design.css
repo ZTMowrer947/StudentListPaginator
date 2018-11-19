@@ -4,6 +4,12 @@ body{
   color: #222;
 }
 
+label {
+  color: #888;
+  font-weight: lighter;
+  margin-right: 0.5rem;
+}
+
 .page{
   margin: 50px auto;
   width: 70%;
@@ -47,12 +53,6 @@ body{
       margin-top: 0.5rem;
       display: flex;
       justify-content: end;
-    }
-    
-    .page-header .student-search .search-sorting label {
-      color: #888;
-      font-weight: lighter;
-      margin-right: 0.5rem;
     }
 
 .student-list{}
@@ -134,3 +134,8 @@ body{
       background-color: #4ba6c3;
       color: #fff;
     }
+
+.items-per-page {
+  display: flex;
+  justify-content: end;
+}
