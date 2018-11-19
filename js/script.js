@@ -418,7 +418,7 @@ const onPageLoad = () => {
    pageDiv.appendChild(itemsPerPageDiv);
 
    // When the items per page value changes, update pagination accordingly
-   ippSelect.addEventListener("change", () => appendPageLinks(studentsUl.children, ippSelect.value));
+   ippSelect.addEventListener("change", () => appendPageLinks(studentsUl.children, parseInt(ippSelect.value)));
 
    // Append search functionality
    appendSearch(studentsUl);
