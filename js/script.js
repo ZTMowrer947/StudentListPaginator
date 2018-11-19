@@ -336,7 +336,7 @@ const appendSearch = listElement => {
          results.forEach(result => listElement.appendChild(result));
 
          // Get number of items to display per page
-         const itemsPerPage = document.querySelector("select#ipp").value;
+         const itemsPerPage = parseInt(document.querySelector("select#ipp").value);
 
          /*
             Update the pagination links for the new results,
