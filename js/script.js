@@ -31,6 +31,9 @@ const showPage = (list, pageNumber, itemsPerPage) => {
          list[i].style.display = "";      // Show element
       }
    }
+
+   // Scroll up to top of page
+   window.scrollTo(0, 0);
 }
 
 /*
