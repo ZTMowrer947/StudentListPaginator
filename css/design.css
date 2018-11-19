@@ -52,7 +52,7 @@ label {
     .page-header .student-search .search-sorting {
       margin-top: 0.5rem;
       display: flex;
-      justify-content: end;
+      justify-content: flex-end;
     }
 
 .student-list{}
@@ -136,6 +136,7 @@ label {
     }
 
 .items-per-page {
+  margin-top: 1rem;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
