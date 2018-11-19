@@ -9,15 +9,16 @@ let studentsUl = document.querySelector("ul.student-list");
 // Array of all students
 const allStudents = [ ...studentsUl.children ];
 
-
-
-// Shows (up to) ten items on the given page from the given list, hiding all other items in the list 
-const showPage = (list, pageNumber) => {
+/*
+   Shows (up to) the given number of items per page on the given page from the given list,
+   hiding all other items in the list 
+*/
+const showPage = (list, pageNumber, itemsPerPage) => {
    // Calculate index of first item to display
-   const firstItemIndex = (pageNumber - 1) * 10;
+   const firstItemIndex = (pageNumber - 1) * itemsPerPage;
 
    // Calculate index of last item to display (unless list ends before this index is reached)
-   const lastItemIndex = firstItemIndex + 9
+   const lastItemIndex = firstItemIndex + itemsPerPage - 1
 
    /*
       Hide all items before first item index and after last item index (if reached) and
@@ -27,13 +28,16 @@ const showPage = (list, pageNumber) => {
       if (i < firstItemIndex || i > lastItemIndex) {
          list[i].style.display = "none";  // Hide element
       } else {
-         list[i].style.display = "block"; // Show element
+         list[i].style.display = "";      // Show element
       }
    }
 }
 
-// Append pagination links for items in given list
-const appendPageLinks = list => {
+/*
+   Append pagination links for items in given list,
+   displaying the given number of items per page
+*/
+const appendPageLinks = (list, itemsPerPage) => {
    // Get page div
    const pageDiv = document.querySelector("div.page");
 
@@ -46,7 +50,7 @@ const appendPageLinks = list => {
    }
 
    // Calculate number of pages to generate links for
-   const numberOfPages = Math.ceil(list.length / 10)
+   const numberOfPages = Math.ceil(list.length / itemsPerPage);
 
    // Create pagination div, giving it the pagination class
    const paginationDiv = document.createElement("div");
@@ -69,7 +73,7 @@ const appendPageLinks = list => {
       */
       if (i === 1) {
          a.classList.add("active");
-         showPage(list, 1);
+         showPage(list, 1, itemsPerPage);
       }
 
       // Set text content to be page number
@@ -91,7 +95,7 @@ const appendPageLinks = list => {
          e.target.classList.add("active");
 
          // Show students on page that anchor links to
-         showPage(list, i);
+         showPage(list, i, itemsPerPage);
       });
 
       // Append anchor to list item
@@ -104,8 +108,17 @@ const appendPageLinks = list => {
    // Append ul to pagination div
    paginationDiv.appendChild(ul);
 
-   // Append pagination to page div
-   pageDiv.appendChild(paginationDiv);
+   // Get items per page div, if present (won't be on initial page load)
+   const itemsPerPageDiv = document.querySelector("div.items-per-page");
+
+   // If it is present,
+   if (itemsPerPageDiv !== null) {
+      // Insert pagination before items per page div
+      pageDiv.insertBefore(paginationDiv, itemsPerPageDiv)
+   } else {
+      // Otherwise, append pagination to page div
+      pageDiv.appendChild(paginationDiv);
+   }
 }
 
 // Append search functionality
@@ -257,6 +270,7 @@ const appendSearch = listElement => {
             }
          }
 
+         // Sort by name function
          const sortByName = (a, b) => {
             // Get names of elements to compare
             const nameA = a.firstElementChild.children[1].textContent;
@@ -266,6 +280,7 @@ const appendSearch = listElement => {
             return spaceship(nameA, nameB);
          };
 
+         // Sort by date joined function
          const sortByJoinDate = (a, b) => {
             // Get date text of elements to compare
             const dateTextA = a.lastElementChild.firstElementChild.textContent;
@@ -317,8 +332,14 @@ const appendSearch = listElement => {
          // Append each result to the list element
          results.forEach(result => listElement.appendChild(result));
 
-         // Update the pagination links for the new results
-         appendPageLinks(listElement.children);
+         // Get number of items to display per page
+         const itemsPerPage = document.querySelector("select#ipp").value;
+
+         /*
+            Update the pagination links for the new results,
+            displaying the given number of items per page
+         */
+         appendPageLinks(listElement.children, itemsPerPage);
       }
    };
 
@@ -328,7 +349,7 @@ const appendSearch = listElement => {
    // Also apply search handler when input field changes
    input.addEventListener("keyup", searchHandler);
 
-   // Also apply search handler when select field changes
+   // Also apply search handler when sorting select field changes
    sortBySelect.addEventListener("change", searchHandler);
 
    // Append input and button to search div
@@ -349,8 +370,59 @@ const appendSearch = listElement => {
    pageHeader.appendChild(searchDiv);
 }
 
-// Add pagination links and search functionality for students on page load
-window.onload = () => {
-   appendPageLinks(allStudents);
+// Add pagination links, items per page functionality, and search functionality for students on page load
+const onPageLoad = () => {
+   // Append page links for all students, 10 items per page by default
+   appendPageLinks(allStudents, 10);
+
+   // Create items per page div, with the items-per-page class
+   const itemsPerPageDiv = document.createElement("div");
+   itemsPerPageDiv.classList.add("items-per-page");
+
+   // Create items per page label for ipp select element
+   const ippLabel = document.createElement("label");
+   ippLabel.htmlFor = "ipp";
+   ippLabel.innerText = "Items per page:";
+
+   // Create items per page select element with ipp ID
+   const ippSelect = document.createElement("select");
+   ippSelect.id = "ipp";
+
+   // Items per page option data
+   const ippOptionData = [
+      10,
+      20,
+      25,
+      40,
+      50,
+   ];
+
+   // Create option element for each option value
+   ippOptionData.forEach(optionValue => {
+      const option = document.createElement("option");
+
+      option.value = optionValue;
+      option.innerText = optionValue.toString();
+
+      ippSelect.appendChild(option);
+   });
+
+   // Append items per page label and select to respective div
+   itemsPerPageDiv.appendChild(ippLabel);
+   itemsPerPageDiv.appendChild(ippSelect);
+
+   // Get page div
+   const pageDiv = document.querySelector("div.page");
+
+   // Append items per page div to page div
+   pageDiv.appendChild(itemsPerPageDiv);
+
+   // When the items per page value changes, update pagination accordingly
+   ippSelect.addEventListener("change", () => appendPageLinks(studentsUl.children, ippSelect.value));
+
+   // Append search functionality
    appendSearch(studentsUl);
 }
+
+// Run onPageLoad function when page loads
+window.onload = onPageLoad;
