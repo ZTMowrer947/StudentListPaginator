@@ -145,7 +145,7 @@ const appendSearch = listElement => {
    // Create sort label for sort-by select element
    const sortByLabel = document.createElement("label");
    sortByLabel.htmlFor = "sort-by";
-   sortByLabel.innerText = "Optionally sort by:";
+   sortByLabel.innerText = "Sort by:";
 
    // Create sorting select, with sort-by ID
    const sortBySelect = document.createElement("select");
